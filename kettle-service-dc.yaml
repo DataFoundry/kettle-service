@@ -15,6 +15,9 @@ spec:
       labels:
         app: kettle-service
     spec:
+      volumes:
+      - emptyDir: {}
+        name: volume-#voluid#
       containers:
       - image: registry.dataos.io/guestbook/kettle-service
         imagePullPolicy: Always
@@ -28,6 +31,20 @@ spec:
           protocol: TCP
         resources: {}
         terminationMessagePath: /dev/termination-log
+        volumeMounts:
+        - mountPath: /trans
+          name: volume-#voluid#
+      - image: registry.dataos.io/guestbook/kettle-service/simple-file-uploader
+        imagePullPolicy: Always
+        name: simple-file-uploader
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        volumeMounts:
+        - mountPath: /simple-file-uploader/uploads
+          name: volume--#voluid#
       dnsPolicy: ClusterFirst
       restartPolicy: Always
   test: false
