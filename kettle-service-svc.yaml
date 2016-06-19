@@ -6,10 +6,30 @@ metadata:
   name: kettle-service
 spec:
   ports:
-  - name: 8181-tcp
-    port: 8181
+  - name: 8080-tcp
+    port: 8080
     protocol: TCP
-    targetPort: 8181
+    targetPort: 8080
+  selector:
+    app: kettle-service
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kettle-service
+  name: kettle-file-uploader
+spec:
+  ports:
+  - name: 8000-tcp
+    port: 8000
+    protocol: TCP
+    targetPort: 8000
   selector:
     app: kettle-service
   sessionAffinity: None
