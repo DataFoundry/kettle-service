@@ -52,3 +52,45 @@ datagrid@datagrid-MacBookPro:~/Downloads$ oc logs -f kettle-service1-5-ri04y
 2016/05/21 12:19:44 - data_dest.0 - Finished processing (I=0, O=9, R=9, W=9, U=0, E=0)
 2016/05/21 12:19:44 - waiting_for_create_source_data.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
 ```
+*  为kettle服务提供文件上传功能
+```
+oc new-build https://github.com/DataFoundry/simple-file-uploader.git
+```
+
+*  修改kettle服务DC配置，让kettle和文件上传服务一起运行
+```
+oc edit dc kettle-servic
+```
+在kettle服务dc配置的spec配置下增加如下内容:
+```
+    spec:
+      volumes:
+      - emptyDir: {}
+        name: volume-tko1o
+```
+以上配置为kettle服务添加了一个卷，将用来为kettle服务和文件上传服务共享文件使用
+在kettle服务dc配置的spec/containers配置项下添加如下内容：
+```
+    spec:
+      containers:
+      - image: 172.30.188.59:5000/yepeng/simple-file-uploader@sha256:dcab5ef91fc3b75159a0fc7534ecc16b8b94adf74f412f4c37d14e0f7c60d805
+        imagePullPolicy: Always
+        name: simple-file-uploader
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        volumeMounts:
+        - mountPath: /simple-file-uploader/uploads
+          name: volume-tko1o
+      - image: 172.30.188.59:5000/yepeng/kttle-service
+        imagePullPolicy: Always
+        name: kettle
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        volumeMounts:
+        - mountPath: /trans
+          name: volume-tko1o
+```
+在这里我们把kettle服务容器和文件上传服务容器运行在同一个POD中，然后通过一个卷来共享数据，这样通过文件上传服务上传的kettle配置文件就可以在kettle中被执行了。
