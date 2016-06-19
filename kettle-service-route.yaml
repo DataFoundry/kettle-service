@@ -7,8 +7,24 @@ metadata:
 spec:
   host: kettle-service.app.dataos.io
   port:
-    targetPort: 8181-tcp
+    targetPort: 8080-tcp
   to:
     kind: Service
     name: kettle-service
+status: {}
+
+---
+apiVersion: v1
+kind: Route
+metadata:
+  labels:
+    app: kettle-service
+  name: kettle-file-uploader
+spec:
+  host: kettle-file-uploader.app.dataos.io
+  port:
+    targetPort: 8000-tcp
+  to:
+    kind: Service
+    name: kettle-file-uploader
 status: {}
