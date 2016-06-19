@@ -34,7 +34,7 @@ spec:
         volumeMounts:
         - mountPath: /trans
           name: volume-#voluid#
-      - image: registry.dataos.io/guestbook/kettle-service/simple-file-uploader
+      - image: registry.dataos.io/guestbook/simple-file-uploader
         imagePullPolicy: Always
         name: simple-file-uploader
         ports:
