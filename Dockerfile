@@ -9,7 +9,7 @@ RUN echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true 
 RUN apt-get -y install oracle-java7-installer ant && apt-get clean
 RUN echo "JAVA_HOME=/usr/lib/jvm/java-7-oracle" >> /etc/environment
 
-RUN wget -P / http://downloads.sourceforge.net/project/pentaho/Data%20Integration/5.0.1-stable/pdi-ce-5.0.1-stable.zip && \
+RUN wget -P / https://s3.cn-north-1.amazonaws.com.cn/datafoundry/base_software/pdi-ce-5.0.1-stable.zip && \
     wget -P / https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.38.tar.gz 
 ADD . /
 RUN unzip pdi-ce-5.0.1-stable.zip \
